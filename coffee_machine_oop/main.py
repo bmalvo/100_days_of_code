@@ -5,6 +5,7 @@ from money_machine import MoneyMachine
 
 is_on = True
 coffe_maker = CoffeeMaker()
+menu = Menu()
 
 while  is_on:
     user_input = input('What would you like? (espresso/latte/cappuccino/):')
@@ -13,4 +14,7 @@ while  is_on:
     if user_input == 'report':
         coffe_maker.report()
     else:
-        print(user_input)
+        drink = menu.find_drink(user_input)
+        if drink:
+            coffe_maker.is_resource_sufficient(drink)
+            print('done')
