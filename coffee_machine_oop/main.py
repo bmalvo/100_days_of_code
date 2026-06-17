@@ -4,10 +4,13 @@ from money_machine import MoneyMachine
 
 
 is_on = True
+coffe_maker = CoffeeMaker()
 
 while  is_on:
     user_input = input('What would you like? (espresso/latte/cappuccino/):')
     if user_input == 'off':
         is_on = False
+    if user_input == 'report':
+        coffe_maker.report()
     else:
         print(user_input)
