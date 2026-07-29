@@ -13,6 +13,9 @@ tim = Turtle()
 tim.shape('turtle')
 tim.color('chartreuse')
 
+def tim_new_color():
+    return tim.color(random_color())
+
 # draw a rectangle
 # tim.forward(100)
 # tim.right(90)
@@ -30,10 +33,12 @@ tim.color('chartreuse')
 #     tim.down()
 
 # draw a triangle
-tim.color(random_color())
+tim_new_color()
 for i in range(3):
     tim.forward(100)
     tim.right(120)
+# draw a square
+
 
 
 screen = Screen()
