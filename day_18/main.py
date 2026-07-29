@@ -21,6 +21,11 @@ tim.color('chartreuse')
 #     tim.forward(10)
 #     tim.down()
 
+# draw a triangle
+for i in range(3):
+    tim.forward(100)
+    tim.right(120)
+
 
 screen = Screen()
 screen.exitonclick()
