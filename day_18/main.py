@@ -42,7 +42,11 @@ tim_new_color()
 for i in range(4):
     tim.forward(100)
     tim.right(90)
-
+# draw a pentagon
+tim_new_color()
+for i in range(5):
+    tim.forward(100)
+    tim.right(72)
 
 screen = Screen()
 screen.exitonclick()
