@@ -56,12 +56,17 @@ for i in range(6):
 tim_new_color()
 for i in range(7):
     tim.forward(100)
-    tim.right(51.4)
+    tim.right(51.5)
 # draw an octagon
 tim_new_color()
 for i in range(8):
     tim.forward(100)
     tim.right(45)
+# draw a nonagon
+tim_new_color()
+for i in range(9):
+    tim.forward(100)
+    tim.right(40)
 
 screen = Screen()
 screen.exitonclick()
