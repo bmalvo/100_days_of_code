@@ -57,6 +57,11 @@ tim_new_color()
 for i in range(7):
     tim.forward(100)
     tim.right(51.4)
+# draw an octagon
+tim_new_color()
+for i in range(8):
+    tim.forward(100)
+    tim.right(45)
 
 screen = Screen()
 screen.exitonclick()
