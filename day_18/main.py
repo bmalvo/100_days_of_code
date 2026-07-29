@@ -67,6 +67,11 @@ tim_new_color()
 for i in range(9):
     tim.forward(100)
     tim.right(40)
+# draw a decagon
+tim_new_color()
+for i in range(10):
+    tim.forward(100)
+    tim.right(36)
 
 screen = Screen()
 screen.exitonclick()
