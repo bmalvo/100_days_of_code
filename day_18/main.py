@@ -38,7 +38,10 @@ for i in range(3):
     tim.forward(100)
     tim.right(120)
 # draw a square
-
+tim_new_color()
+for i in range(4):
+    tim.forward(100)
+    tim.right(90)
 
 
 screen = Screen()
