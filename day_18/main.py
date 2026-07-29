@@ -1,4 +1,12 @@
 from turtle import Turtle, Screen
+import random
+
+
+def random_color():
+    r = round(random.random(), 3)
+    g = round(random.random(), 3)
+    b = round(random.random(), 3)
+    return r, g, b
 
 
 tim = Turtle()
@@ -22,6 +30,7 @@ tim.color('chartreuse')
 #     tim.down()
 
 # draw a triangle
+tim.color(random_color())
 for i in range(3):
     tim.forward(100)
     tim.right(120)
