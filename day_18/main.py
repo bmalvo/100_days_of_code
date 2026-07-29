@@ -47,6 +47,12 @@ tim_new_color()
 for i in range(5):
     tim.forward(100)
     tim.right(72)
+# draw a hexagon
+tim_new_color()
+for i in range(6):
+    tim.forward(100)
+    tim.right(60)
+
 
 screen = Screen()
 screen.exitonclick()
