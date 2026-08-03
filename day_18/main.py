@@ -1,12 +1,15 @@
 from turtle import Turtle, Screen
-import random
-
-
-def random_color():
-    r = round(random.random(), 3)
-    g = round(random.random(), 3)
-    b = round(random.random(), 3)
-    return r, g, b
+from random_color import random_color
+from draw_rectangle import draw_rectangle
+from draw_dash_line import draw_dash_line
+from draw_decagon import draw_decagon
+from draw_nonagon import draw_nonagon
+from draw_octagon import draw_octagon
+from draw_heptagon import draw_heptagon
+from draw_hexagon import draw_hexagon
+from draw_pentagon import draw_pentagon
+from draw_square import draw_square
+from draw_triangle import draw_triangle
 
 
 tim = Turtle()
@@ -17,61 +20,47 @@ def tim_new_color():
     return tim.color(random_color())
 
 # draw a rectangle
-# tim.forward(100)
-# tim.right(90)
-# tim.forward(100)
-# tim.right(90)
-# tim.forward(100)
-# tim.right(90)
-# tim.forward(100)
+# draw_rectangle(tim)
 
 # draw a dash-line
-# for i in range(15):
-#     tim.forward(10)
-#     tim.up()
-#     tim.forward(10)
-#     tim.down()
+# draw_dash_line(tim)
 
-# draw a triangle
-tim_new_color()
-for i in range(3):
-    tim.forward(100)
-    tim.right(120)
-# draw a square
-tim_new_color()
-for i in range(4):
-    tim.forward(100)
-    tim.right(90)
-# draw a pentagon
-tim_new_color()
-for i in range(5):
-    tim.forward(100)
-    tim.right(72)
-# draw a hexagon
-tim_new_color()
-for i in range(6):
-    tim.forward(100)
-    tim.right(60)
-# draw a heptagon
-tim_new_color()
-for i in range(7):
-    tim.forward(100)
-    tim.right(51.5)
-# draw an octagon
-tim_new_color()
-for i in range(8):
-    tim.forward(100)
-    tim.right(45)
-# draw a nonagon
-tim_new_color()
-for i in range(9):
-    tim.forward(100)
-    tim.right(40)
-# draw a decagon
-tim_new_color()
-for i in range(10):
-    tim.forward(100)
-    tim.right(36)
+# # draw a triangle
+# tim_new_color()
+# draw_triangle(tim)
+
+# # draw a square
+# tim_new_color()
+# draw_square(tim)
+
+# # draw a pentagon
+# tim_new_color()
+# draw_pentagon(tim)
+
+# # draw a hexagon
+# tim_new_color()
+# draw_hexagon(tim)
+
+# # draw a heptagon
+# tim_new_color()
+# draw_heptagon(tim)
+
+# # draw an octagon
+# tim_new_color()
+# draw_octagon(tim)
+
+# # draw a nonagon
+# tim_new_color()
+# draw_nonagon(tim)
+
+# # draw a decagon
+# tim_new_color()
+# draw_decagon(tim)
+
+# Random walk
+# fat path
+# random color path
+#same distance
 
 screen = Screen()
 screen.exitonclick()
