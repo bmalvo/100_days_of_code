@@ -1,3 +1,4 @@
+import random
 from turtle import Turtle, Screen
 from random_color import random_color
 from draw_rectangle import draw_rectangle
@@ -58,9 +59,14 @@ def tim_new_color():
 # draw_decagon(tim)
 
 # Random walk
-# fat path
-# random color path
-#same distance
+
+directions_list = [0, 90, 180, 270]
+tim.pensize(10)
+tim.speed(0)
+for i in range(500):
+    tim_new_color()
+    tim.setheading(random.choice(directions_list))
+    tim.forward(50)
 
 screen = Screen()
 screen.exitonclick()
