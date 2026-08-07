@@ -11,14 +11,13 @@ from draw_hexagon import draw_hexagon
 from draw_pentagon import draw_pentagon
 from draw_square import draw_square
 from draw_triangle import draw_triangle
+from random_walk import random_walk
 
 
 tim = Turtle()
 tim.shape('turtle')
 tim.color('chartreuse')
 
-def tim_new_color():
-    return tim.color(random_color())
 
 # draw a rectangle
 # draw_rectangle(tim)
@@ -60,13 +59,7 @@ def tim_new_color():
 
 # Random walk
 
-directions_list = [0, 90, 180, 270]
-tim.pensize(10)
-tim.speed(0)
-for i in range(500):
-    tim_new_color()
-    tim.setheading(random.choice(directions_list))
-    tim.forward(50)
+random_walk(tim)
 
 screen = Screen()
 screen.exitonclick()
