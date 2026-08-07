@@ -12,6 +12,8 @@ from draw_pentagon import draw_pentagon
 from draw_square import draw_square
 from draw_triangle import draw_triangle
 from random_walk import random_walk
+from new_color import new_color
+from draw_spirograph import draw_spirograph
 
 
 tim = Turtle()
@@ -58,8 +60,10 @@ tim.color('chartreuse')
 # draw_decagon(tim)
 
 # Random walk
+# random_walk(tim)
 
-random_walk(tim)
+# make a spirograph
+draw_spirograph(tim)
 
 screen = Screen()
 screen.exitonclick()
