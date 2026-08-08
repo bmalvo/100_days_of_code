@@ -7,6 +7,10 @@ colors = [(color.rgb.r, color.rgb.g, color.rgb.b) for color in colors]
 leon = Turtle()
 leon.shape('turtle')
 leon.color('chartreuse')
+leon.pu()
+leon.setx(-360)
+leon.sety(-280)
+
 
 
 
