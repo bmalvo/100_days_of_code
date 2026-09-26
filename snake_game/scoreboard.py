@@ -1,4 +1,3 @@
-from mimetypes import init
 from turtle import Turtle
 
 
@@ -13,5 +12,3 @@ class Scoreboard(Turtle):
         self.hideturtle()
         self.goto(0,260)
         self.write(f'Score: {self.score}', align= 'center', font=('Arial', 18, 'normal'))
-        # self.write((200, 100))
-
