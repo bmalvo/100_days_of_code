@@ -1,6 +1,7 @@
 from turtle import Screen, Turtle
 from paddle import Paddle
 from ball import Ball
+import time
 
 # 1. Create a screen
 
@@ -37,6 +38,8 @@ game_is_on = True
 
 
 while game_is_on:
+    time.sleep(1/10)
     screen.update()
+    ball.move()
 
 screen.exitonclick()
