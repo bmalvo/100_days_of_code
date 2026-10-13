@@ -8,7 +8,7 @@ import time
 
 screen = Screen()
 screen.setup(800, 600)
-screen.bgcolor('pink')
+screen.bgcolor('green')
 screen.title('PONG')
 screen.tracer(0)
 
@@ -40,7 +40,7 @@ game_is_on = True
 
 
 while game_is_on:
-    time.sleep(1/10)
+    time.sleep(ball.ball_speed)
     screen.update()
     ball.move()
 
