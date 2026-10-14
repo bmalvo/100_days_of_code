@@ -16,6 +16,7 @@
 <body>
 <h1>PONG</h1>
 <p>Left player: <b>W / S</b> &nbsp;|&nbsp; Right player: <b>↑ / ↓</b></p>
+<p>📱 Mobile: <b>drag on your half of the screen</b> to move your paddle</p>
 <canvas id="game" width="800" height="600"></canvas>
 <p>Python original → <a href="https://github.com/bmalvo/100_days_of_code/tree/main/pong">bmalvo/100_days_of_code/pong</a></p>
 <p>← <a href="https://github.com/bmalvo/100_days_of_code">Back to all projects</a></p>
@@ -76,6 +77,22 @@ addEventListener('keydown', e => {
   if (['ArrowUp', 'ArrowDown'].includes(e.key)) e.preventDefault();
 });
 addEventListener('keyup', e => { keys[e.key] = false; });
+
+// --- touch controls: finger on your half of the screen moves that paddle ---
+function handleTouch(e) {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  for (const t of e.touches) {
+    // map touch position to canvas pixels, then to turtle-style coords
+    const cx = (t.clientX - rect.left) * (canvas.width / rect.width);
+    const cy = (t.clientY - rect.top) * (canvas.height / rect.height);
+    const ty = 300 - cy;                                   // turtle y (center origin, up = positive)
+    if (cx < canvas.width / 2) lPaddle.y = Math.max(-250, Math.min(250, ty));
+    else                       rPaddle.y = Math.max(-250, Math.min(250, ty));
+  }
+}
+canvas.addEventListener('touchstart', handleTouch, { passive: false });
+canvas.addEventListener('touchmove', handleTouch, { passive: false });
 
 let acc = 0, last = performance.now();
 
