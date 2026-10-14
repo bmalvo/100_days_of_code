@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PONG — 100 Days of Code</title>
+<style>
+  body { background: #1a1a2e; color: #fff; font-family: 'Courier New', monospace;
+         display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  h1 { letter-spacing: 6px; margin: 10px 0; }
+  p  { color: #aaa; margin: 4px 0; text-align: center; }
+  canvas { background: green; border: 4px solid #fff; max-width: 100%; }
+  a { color: #7CFC00; }
+</style>
+</head>
+<body>
+<h1>PONG</h1>
+<p>Left player: <b>W / S</b> &nbsp;|&nbsp; Right player: <b>↑ / ↓</b></p>
+<canvas id="game" width="800" height="600"></canvas>
+<p>Python original → <a href="https://github.com/bmalvo/100_days_of_code/tree/main/pong">bmalvo/100_days_of_code/pong</a></p>
+<p>← <a href="https://github.com/bmalvo/100_days_of_code">Back to all projects</a></p>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+// turtle-style coordinates: (0,0) at center, y points up
+const toScreen = (x, y) => [x + 400, 300 - y];
+
+class Paddle {
+  constructor(x, y) { this.x = x; this.y = y; }              // 20x100 like turtle shapesize(5, 1)
+  draw() {
+    const [sx, sy] = toScreen(this.x, this.y);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(sx - 10, sy - 50, 20, 100);
+  }
+  up()   { this.y = Math.min(this.y + 6, 250); }             // held-key movement ≈ original key repeat
+  down() { this.y = Math.max(this.y - 6, -250); }
+}
+
+class Ball {
+  constructor() { this.reset(1); }
+  reset(dir) {
+    this.x = 0; this.y = 0;
+    this.xMove = 10 * dir; this.yMove = 10;
+    this.speed = 0.1;                                        // seconds per step (your ball_speed)
+  }
+  move() { this.x += this.xMove; this.y += this.yMove; }
+  bounceY() { this.yMove *= -1; }
+  bounceX() { this.xMove *= -1; this.speed *= 0.9; }         // your bounce_x: faster every hit
+  dist(p) { return Math.hypot(this.x - p.x, this.y - p.y); }
+}
+
+class Scoreboard {
+  constructor() { this.l = 0; this.r = 0; }
+  point(side) { side === 'l' ? this.l++ : this.r++; }
+  draw() {
+    ctx.fillStyle = 'white';
+    ctx.font = '80px Courier New';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const [, y] = toScreen(0, 200);
+    ctx.fillText(this.l, 300, y);                            // turtle: goto(-100, 200)
+    ctx.fillText(this.r, 500, y);                            // turtle: goto(100, 200)
+  }
+}
+
+const rPaddle = new Paddle(350, 0);
+const lPaddle = new Paddle(-350, 0);
+const ball = new Ball();
+const score = new Scoreboard();
+
+const keys = {};
+addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp', 'ArrowDown'].includes(e.key)) e.preventDefault();
+});
+addEventListener('keyup', e => { keys[e.key] = false; });
+
+let acc = 0, last = performance.now();
+
+function loop(now) {
+  const dt = (now - last) / 1000; last = now;
+
+  if (keys['w'] || keys['W']) lPaddle.up();
+  if (keys['s'] || keys['S']) lPaddle.down();
+  if (keys['ArrowUp'])   rPaddle.up();
+  if (keys['ArrowDown']) rPaddle.down();
+
+  acc += dt;
+  while (acc >= ball.speed) {                                // same rhythm as time.sleep(ball_speed)
+    acc -= ball.speed;
+    ball.move();
+    if (ball.y > 280 || ball.y < -280) ball.bounceY();
+    // your collision rule with the same thresholds
+    if (ball.dist(rPaddle) < 50 && ball.x > 320 || ball.dist(lPaddle) < 50 && ball.x < -320) {
+      ball.bounceX();
+    }
+    // your logic: restart_position() = center + speed reset + bounce_x (serve goes back the other way)
+    if (ball.x > 340)  { ball.reset(-1); score.point('l'); } // right missed → left point, serve left
+    if (ball.x < -340) { ball.reset(1);  score.point('r'); } // left missed → right point, serve right
+  }
+
+  // draw
+  ctx.fillStyle = 'green'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.setLineDash([15, 15]); ctx.strokeStyle = 'white'; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(canvas.width / 2, 0);
+  ctx.lineTo(canvas.width / 2, canvas.height); ctx.stroke(); ctx.setLineDash([]);
+  score.draw(); lPaddle.draw(); rPaddle.draw();
+  const [bx, by] = toScreen(ball.x, ball.y);
+  ctx.beginPath(); ctx.arc(bx, by, 10, 0, Math.PI * 2);
+  ctx.fillStyle = 'white'; ctx.fill();
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
