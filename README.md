@@ -9,6 +9,7 @@ library, no pip installs required.
 | Game | Python (turtle) | Web version |
 |------|-----------------|-------------|
 | **Pong** | [`pong/`](./pong) | 👉 [**Play now**](https://bmalvo.github.io/100_days_of_code/) |
+| **Snake** | [`snake_game/`](./snake_game) | 🐍 [**Play now**](https://bmalvo.github.io/100_days_of_code/snake/) |
 
 ## 📂 Projects
 
@@ -35,10 +36,11 @@ Requires **Python 3** — standard library only.
 
 ## 🌐 The website
 
-The browser version of Pong (HTML5 Canvas port of `pong/`) lives in
-[`docs/`](./docs) and is published with GitHub Pages:
+The browser versions of the games (HTML5 Canvas ports of `pong/` and
+`snake_game/`) live in [`docs/`](./docs) and are published with GitHub Pages:
 
-👉 **https://bmalvo.github.io/100_days_of_code/**
+- 👉 **Pong:** https://bmalvo.github.io/100_days_of_code/
+- 🐍 **Snake:** https://bmalvo.github.io/100_days_of_code/snake/
 
 ---
 *Part of #100DaysOfCode*
