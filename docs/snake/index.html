@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNAKE — 100 Days of Code</title>
+<style>
+  body { background: #1a1a2e; color: #fff; font-family: Arial, sans-serif;
+         display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  h1 { letter-spacing: 6px; margin: 10px 0; }
+  p  { color: #aaa; margin: 4px 0; text-align: center; }
+  canvas { background: black; border: 4px solid #fff; max-width: 100%; touch-action: none; }
+  a { color: #7CFC00; }
+</style>
+</head>
+<body>
+<h1>SNAKE</h1>
+<p>Move: <b>↑ ↓ ← →</b> or <b>W A S D</b> &nbsp;|&nbsp; 📱 <b>swipe</b> to turn</p>
+<p>Game over → tap or press <b>Space</b> to play again</p>
+<canvas id="game" width="600" height="600"></canvas>
+<p>Python original → <a href="https://github.com/bmalvo/100_days_of_code/tree/main/snake_game">bmalvo/100_days_of_code/snake_game</a></p>
+<p>🎮 <a href="../../index.html">Play Pong</a> · ← <a href="https://github.com/bmalvo/100_days_of_code">Back to all projects</a></p>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+// turtle-style coordinates: (0,0) center, y up — same as the Python version
+const toScreen = (x, y) => [x + 300, 300 - y];
+const MOVE = 20;          // snake MOVE_DISTANCE
+const LIMIT = 280;        // wall collision: abs(xcor/ycor) > 280
+const TICK = 0.1;         // time.sleep(0.1)
+
+class Snake {
+  constructor() { this.reset(); }
+  reset() {
+    this.segments = [{ x: 0, y: 0 }, { x: -20, y: 0 }, { x: -40, y: 0 }]; // STARTING_POSITION
+    this.dir = { x: MOVE, y: 0 };
+    this.nextDir = this.dir;
+  }
+  setDir(dx, dy) {
+    if (dx === -this.dir.x && dy === -this.dir.y) return;   // no 180° turn, like snake.up/down guard
+    this.nextDir = { x: dx, y: dy };
+  }
+  move() {
+    this.dir = this.nextDir;
+    const head = this.segments[0];
+    this.segments.unshift({ x: head.x + this.dir.x, y: head.y + this.dir.y });
+    this.segments.pop();
+  }
+  extend() {
+    // Python: add_segment(self.segments[-1].position()) — copy of the tail, immediately
+    const last = this.segments[this.segments.length - 1];
+    this.segments.push({ x: last.x, y: last.y });
+  }
+  distTo(p) {                                                // head.distance(other)
+    const h = this.segments[0];
+    return Math.hypot(h.x - p.x, h.y - p.y);
+  }
+}
+
+class Food {
+  constructor() { this.x = 0; this.y = 0; this.refresh(); }
+  refresh(snake) {
+    // Python: randint(-280, 280) — here snapped to the 20px grid so it's always catchable
+    let tries = 0;
+    do {
+      this.x = (Math.floor(Math.random() * 29) - 14) * MOVE;   // -280 … 280
+      this.y = (Math.floor(Math.random() * 29) - 14) * MOVE;
+      tries++;
+    } while (snake && snake.segments.some(s => s.x === this.x && s.y === this.y) && tries < 50);
+  }
+}
+
+class Scoreboard {
+  constructor() { this.score = 0; }
+  increaseScore() { this.score += 1; }
+  draw() {
+    ctx.fillStyle = 'white';
+    ctx.font = '18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const [, y] = toScreen(0, 260);
+    ctx.fillText('Score: ' + this.score, 300, y);
+  }
+}
+
+const snake = new Snake();
+const food = new Food();
+const scoreboard = new Scoreboard();
+let gameState = 'running';                                  // game_is_on
+
+function restart() {
+  snake.reset();
+  food.refresh(snake);
+  scoreboard.score = 0;
+  gameState = 'running';
+}
+
+// --- keyboard (original controls + WASD) ---
+addEventListener('keydown', e => {
+  const k = e.key;
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(k)) e.preventDefault();
+  if (k === 'ArrowUp' || k === 'w' || k === 'W') snake.setDir(0, MOVE);
+  if (k === 'ArrowDown' || k === 's' || k === 'S') snake.setDir(0, -MOVE);
+  if (k === 'ArrowLeft' || k === 'a' || k === 'A') snake.setDir(-MOVE, 0);
+  if (k === 'ArrowRight' || k === 'd' || k === 'D') snake.setDir(MOVE, 0);
+  if ((k === ' ' || k === 'Enter') && gameState === 'over') restart();
+});
+
+// --- touch: swipe to turn, tap to restart ---
+let touchStart = null;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: false });
+canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  if (!touchStart) return;
+  const dx = e.changedTouches[0].clientX - touchStart.x;
+  const dy = e.changedTouches[0].clientY - touchStart.y;
+  if (Math.abs(dx) < 20 && Math.abs(dy) < 20) {             // tap = restart after game over
+    if (gameState === 'over') restart();
+  } else if (Math.abs(dx) > Math.abs(dy)) {                 // horizontal swipe
+    snake.setDir(dx > 0 ? MOVE : -MOVE, 0);
+  } else {                                                   // vertical swipe (screen y down)
+    snake.setDir(0, dy > 0 ? -MOVE : MOVE);
+  }
+  touchStart = null;
+}, { passive: false });
+canvas.addEventListener('click', () => { if (gameState === 'over') restart(); });
+
+// --- game loop: fixed 0.1s step like time.sleep(0.1) ---
+let acc = 0, last = performance.now();
+
+function step() {
+  snake.move();
+
+  // detect collision with food: head.distance(food) < 15
+  if (snake.distTo(food) < 15) {
+    snake.extend();
+    food.refresh(snake);
+    scoreboard.increaseScore();
+  }
+
+  // detect collision with wall: abs > 280
+  const head = snake.segments[0];
+  if (Math.abs(head.x) > LIMIT || Math.abs(head.y) > LIMIT) {
+    gameState = 'over';
+    return;
+  }
+
+  // detect collision with tail: distance < 10 (skip head)
+  for (let i = 1; i < snake.segments.length; i++) {
+    if (snake.distTo(snake.segments[i]) < 10) {
+      gameState = 'over';
+      return;
+    }
+  }
+}
+
+function draw() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // food: blue circle, 10px across (shapesize stretch 0.5)
+  const [fx, fy] = toScreen(food.x, food.y);
+  ctx.fillStyle = 'blue';
+  ctx.beginPath(); ctx.arc(fx, fy, 5, 0, Math.PI * 2); ctx.fill();
+
+  // snake: white squares (turtle 'square' shape = 20x20)
+  ctx.fillStyle = 'white';
+  for (const seg of snake.segments) {
+    const [sx, sy] = toScreen(seg.x, seg.y);
+    ctx.fillRect(sx - 10, sy - 10, 20, 20);
+  }
+
+  scoreboard.draw();
+
+  if (gameState === 'over') {
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '18px Arial';
+    ctx.fillText('GAME OVER', 300, 300);
+    ctx.fillStyle = '#aaa';
+    ctx.fillText('Score: ' + scoreboard.score + ' — tap or press Space to play again', 300, 330);
+  }
+}
+
+function loop(now) {
+  const dt = (now - last) / 1000;
+  last = now;
+  if (gameState === 'running') {
+    acc += dt;
+    while (acc >= TICK) { acc -= TICK; step(); if (gameState === 'over') break; }
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
