@@ -7,9 +7,14 @@ from scoreboard import Scoreboard
 screen = Screen()
 screen.setup(width=600, height=600)
 screen.tracer(0)
+player = Player()
+
+screen.listen()
+screen.onkey(player.up, 'Up')
 
 game_is_on = True
 while game_is_on:
+    # player.starting_position()
     time.sleep(0.1)
     screen.update()
 
@@ -31,7 +36,7 @@ while game_is_on:
 # steps :
 # 1 - Create a turtle player that starts at the bottom of the
 # screen and listen for the "Up" keypress to move the turtle north.
-# If you get stuck, check the video walkthrough in Step 3.
+# If you get stuck, check the video walkthrough in Step 3.               - done
 #
 # 2 - Create cars that are 20px high by 40px wide that are randomly
 # generated along the y-axis and move to the left edge of the screen.
