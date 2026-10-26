@@ -4,6 +4,9 @@ from player import Player
 from car_manager import CarManager
 from scoreboard import Scoreboard
 
+MOVE_INCREMENT = 0.95
+car_speed = 0.3
+
 screen = Screen()
 screen.setup(width=600, height=600)
 screen.tracer(0)
@@ -18,7 +21,7 @@ counter = 0
 car_objects = []
 
 while game_is_on:
-    time.sleep(0.3)
+    time.sleep(car_speed)
     screen.update()
 
     if  counter % 6 == 0:
@@ -30,6 +33,11 @@ while game_is_on:
         if obj.distance(player) < 25:
             game_is_on = False
             print('game over')
+
+    if player.ycor() > -250:
+        print(car_speed)
+        player.starting_position()
+        car_speed *= max(MOVE_INCREMENT, car_speed)
 
 
 # rules
@@ -60,14 +68,14 @@ while game_is_on:
 # check the video walkthrough in Step 4.                                      - done
 #
 # 3 - Detect when the turtle player collides with a car and stop the
-# game if this happens. If you get stuck, check the video walkthrough
+# game if this happens. If you get stuck, check the video walkthrough         - done
 # in Step 5.
 #
 # 4 - Detect when the turtle player has reached the top edge of the screen
 # (i.e., reached the FINISH_LINE_Y). When this happens, return the turtle
 # to the starting position and increase the speed of the cars. Hint: think
 # about creating an attribute and using the MOVE_INCREMENT to increase the
-# car speed. If you get stuck, check the video walkthrough in Step 6.
+# car speed. If you get stuck, check the video walkthrough in Step 6.         - done
 #
 # 5 - Create a scoreboard that keeps track of which level the user is on.
 # Every time the turtle player does a successful crossing, the level should
