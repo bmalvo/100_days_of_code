@@ -8,7 +8,7 @@ screen = Screen()
 screen.setup(width=600, height=600)
 screen.tracer(0)
 player = Player()
-car = CarManager()
+# car = CarManager()
 
 screen.listen()
 screen.onkey(player.up, 'Up')
@@ -18,17 +18,18 @@ counter = 0
 car_objects = []
 
 while game_is_on:
-    car.move()
     time.sleep(0.3)
     screen.update()
 
     if  counter % 6 == 0:
-        print('test')
         new_car = CarManager()
         car_objects.append(new_car)
     counter += 1
     for obj in car_objects:
         obj.move()
+        if obj.distance(player) < 25:
+            game_is_on = False
+            print('game over')
 
 
 # rules
