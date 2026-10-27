@@ -11,7 +11,7 @@ screen = Screen()
 screen.setup(width=600, height=600)
 screen.tracer(0)
 player = Player()
-# car = CarManager()
+scoreboard = Scoreboard()
 
 screen.listen()
 screen.onkey(player.up, 'Up')
@@ -32,12 +32,15 @@ while game_is_on:
         obj.move()
         if obj.distance(player) < 25:
             game_is_on = False
+            scoreboard.display_game_over()
             print('game over')
 
-    if player.ycor() > -250:
-        print(car_speed)
+    if player.ycor() > 250:
         player.starting_position()
         car_speed *= max(MOVE_INCREMENT, car_speed)
+        scoreboard.level_up()
+
+screen.exitonclick()
 
 
 # rules
