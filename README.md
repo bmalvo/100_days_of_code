@@ -10,6 +10,7 @@ library, no pip installs required.
 |------|-----------------|-------------|
 | **Pong** | [`pong/`](./pong) | 👉 [**Play now**](https://bmalvo.github.io/100_days_of_code/) |
 | **Snake** | [`snake_game/`](./snake_game) | 🐍 [**Play now**](https://bmalvo.github.io/100_days_of_code/snake/) |
+| **Turtle Crossing** | [`turtle-crossing-start/`](./turtle-crossing-start) | 🐢 [**Play now**](https://bmalvo.github.io/100_days_of_code/turtle-crossing/) |
 
 ## 📂 Projects
 
@@ -17,6 +18,7 @@ library, no pip installs required.
 |--------|------------|
 | `pong/` | Classic Pong — turtle graphics, classes, collision detection, scoring |
 | `snake_game/` | Snake — OOP with `Snake`, `Food` and `Scoreboard` classes |
+| `turtle-crossing-start/` | Turtle Crossing — Frogger-style game: cars, levels, collision detection |
 | `coffee_machine_oop/` | Coffee machine simulator, object-oriented refactor (menu, makers, money) |
 | `quiz-game-start/` | Quiz app — questions from `data.py`, OOP quiz brain |
 | `day_17/` | Quiz game — OOP |
@@ -36,11 +38,12 @@ Requires **Python 3** — standard library only.
 
 ## 🌐 The website
 
-The browser versions of the games (HTML5 Canvas ports of `pong/` and
-`snake_game/`) live in [`docs/`](./docs) and are published with GitHub Pages:
+The browser versions of the games (HTML5 Canvas ports of `pong/`,
+`snake_game/` and `turtle-crossing-start/`) live in [`docs/`](./docs) and are published with GitHub Pages:
 
 - 👉 **Pong:** https://bmalvo.github.io/100_days_of_code/
 - 🐍 **Snake:** https://bmalvo.github.io/100_days_of_code/snake/
+- 🐢 **Turtle Crossing:** https://bmalvo.github.io/100_days_of_code/turtle-crossing/
 
 ---
 *Part of #100DaysOfCode*

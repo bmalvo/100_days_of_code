@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TURTLE CROSSING — 100 Days of Code</title>
+<style>
+  body { background: #1a1a2e; color: #fff; font-family: 'Courier New', monospace;
+         display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+  h1 { letter-spacing: 4px; margin: 10px 0; }
+  p  { color: #aaa; margin: 4px 0; text-align: center; }
+  canvas { background: white; border: 4px solid #fff; max-width: 100%; touch-action: none; }
+  a { color: #7CFC00; }
+</style>
+</head>
+<body>
+<h1>TURTLE CROSSING</h1>
+<p>Move up: <b>↑</b> or <b>W</b> (hold to keep walking) &nbsp;|&nbsp; 📱 <b>touch &amp; hold</b> the screen</p>
+<p>Reach the top without getting hit. Game over → tap or press <b>Space</b></p>
+<canvas id="game" width="600" height="600"></canvas>
+<p>Python original → <a href="https://github.com/bmalvo/100_days_of_code/tree/main/turtle-crossing-start">bmalvo/100_days_of_code/turtle-crossing-start</a></p>
+<p>🎮 <a href="../index.html">Pong</a> · <a href="../snake/index.html">Snake</a> · ← <a href="https://github.com/bmalvo/100_days_of_code">Back to all projects</a></p>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+// turtle-style coordinates: (0,0) center, y up — same as the Python version
+const toScreen = (x, y) => [x + 300, 300 - y];
+const randint = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;   // Python random.randint
+
+const COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];     // car_manager.COLORS
+const PLAYER_MOVE = 10;                                                    // player.MOVE_DISTANCE
+const CAR_MOVE = 10;                                                       // CarManager.move: x - 10
+const MOVE_INCREMENT = 0.95;                                               // main.MOVE_INCREMENT
+const FINISH_Y = 250;                                                      // main: player.ycor() > 250
+
+class Player {
+  constructor() { this.reset(); }
+  reset() { this.x = 0; this.y = -280; }                                   // STARTING_POSITION
+  up() { this.y += PLAYER_MOVE; }                                          // only forward, never back
+  draw() {
+    const [sx, sy] = toScreen(this.x, this.y);
+    ctx.fillStyle = 'red'; ctx.strokeStyle = 'red'; ctx.lineWidth = 3;
+    // legs
+    for (const [dx, dy] of [[-9, -6], [9, -6], [-9, 7], [9, 7]]) {
+      ctx.beginPath(); ctx.ellipse(sx + dx, sy + dy, 4, 3, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    // tail, shell, head (turtle faces up)
+    ctx.beginPath(); ctx.moveTo(sx - 3, sy + 11); ctx.lineTo(sx + 3, sy + 11); ctx.lineTo(sx, sy + 19); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(sx, sy, 9, 12, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(sx, sy - 15, 5, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+class Car {
+  constructor() {
+    this.color = COLORS[randint(0, COLORS.length - 1)];
+    this.x = 300;
+    this.y = randint(-230, 230);                                           // no cars in the 50px safe zones
+  }
+  move() { this.x -= CAR_MOVE; }
+  draw() {
+    const [sx, sy] = toScreen(this.x, this.y);
+    ctx.fillStyle = this.color;
+    ctx.fillRect(sx - 20, sy - 10, 40, 20);                                // shapesize(1, 2) = 20px high, 40px wide
+  }
+}
+
+class Scoreboard {
+  constructor() { this.level = 1; }
+  levelUp() { this.level += 1; }
+  draw() {
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Courier New';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    const [x, y] = toScreen(-200, 250);
+    ctx.fillText('level: ' + this.level, x, y);
+  }
+  drawGameOver() {
+    ctx.fillStyle = 'black';
+    ctx.font = '24px Courier New';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('GAME OVER', 300, 300);
+    ctx.font = '14px Courier New';
+    ctx.fillStyle = '#555';
+    ctx.fillText('tap or press Space to play again', 300, 330);
+  }
+}
+
+const player = new Player();
+const scoreboard = new Scoreboard();
+let cars = [];
+let carSpeed = 0.3;              // main.car_speed = seconds per game-loop step (time.sleep)
+let counter = 0;
+let gameState = 'running';       // game_is_on
+
+function restart() {
+  player.reset();
+  scoreboard.level = 1;
+  cars = [];
+  carSpeed = 0.3;
+  counter = 0;
+  gameState = 'running';
+  acc = 0;
+}
+
+function playerUp() { if (gameState === 'running') player.up(); }
+
+// --- keyboard: Up (original) + W; key auto-repeat = hold to walk ---
+addEventListener('keydown', e => {
+  const k = e.key;
+  if (k === 'ArrowUp' || k === 'w' || k === 'W' || k === ' ') e.preventDefault();
+  if (k === 'ArrowUp' || k === 'w' || k === 'W') playerUp();
+  if ((k === ' ' || k === 'Enter') && gameState === 'over') restart();
+});
+
+// --- touch: touch & hold walks forward, tap restarts after game over ---
+let holdTimer = null;
+function stopHold() { if (holdTimer) { clearInterval(holdTimer); holdTimer = null; } }
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (gameState === 'over') { restart(); return; }
+  playerUp();
+  stopHold();
+  holdTimer = setInterval(playerUp, 50);
+}, { passive: false });
+canvas.addEventListener('touchend', e => { e.preventDefault(); stopHold(); }, { passive: false });
+canvas.addEventListener('touchcancel', stopHold);
+canvas.addEventListener('click', () => { if (gameState === 'over') restart(); });
+
+// --- game loop: one step every carSpeed seconds, like time.sleep(car_speed) ---
+let acc = 0, last = performance.now();
+
+function step() {
+  // new car only every 6th loop run
+  if (counter % 6 === 0) cars.push(new Car());
+  counter += 1;
+
+  for (const car of cars) {
+    car.move();
+    // collision: obj.distance(player) < 25
+    if (Math.hypot(car.x - player.x, car.y - player.y) < 25) gameState = 'over';
+  }
+  if (gameState === 'over') return;
+
+  // reached the top edge: back to start, level up, cars get faster
+  if (player.y > FINISH_Y) {
+    player.reset();
+    carSpeed *= Math.max(MOVE_INCREMENT, carSpeed);        // same expression as the Python original
+    scoreboard.levelUp();
+  }
+
+  cars = cars.filter(c => c.x > -340);                     // off-screen cars are no longer needed
+}
+
+function draw() {
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (const car of cars) car.draw();
+  player.draw();
+  scoreboard.draw();
+  if (gameState === 'over') scoreboard.drawGameOver();
+}
+
+function loop(now) {
+  const dt = (now - last) / 1000;
+  last = now;
+  if (gameState === 'running') {
+    acc += dt;
+    while (acc >= carSpeed) { acc -= carSpeed; step(); if (gameState === 'over') break; }
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
